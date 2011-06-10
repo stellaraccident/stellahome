@@ -1,2 +1,20 @@
 # Source to setup
+export HDIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+
+if ! [ -d "$HDIR" ]; then
+	echo "WARNING: $HDIR does not exist.  Is setup unpacked properly."
+fi
+
+# Restore original login path if exists
+if ! [ -z "$HORIG_PATH" ]; then
+	export PATH="$HORIG_PATH"
+fi
+
+# Add path entries
+export PATH=$HOME/bin:$HDIR/bin:$PATH
+
+function resetup() {
+	source $HDIR/setup
+}
+
 

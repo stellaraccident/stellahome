@@ -1,0 +1,37 @@
+#!/bin/bash
+# Unsplit files taken apart by split.  Pass in the file prefix.
+
+# Probe to see whether we have the prefix right
+PREFIX="$1"
+if [ -z "$PREFIX" ]; then
+	echo "Expected split file prefix" >&2
+	exit 1
+fi
+
+if ! [ -f "${PREFIX}00" ]; then
+	PREFIX="$PREFIX."
+	if ! [ -f "${PREFIX}00" ]; then
+		echo "Could not find split files with name $PREFIX" >&2
+		exit 1
+	fi
+fi
+
+FILES=""
+INDEX=0
+while true
+do
+	INDEXS=$(printf %02d $INDEX)
+	FILE=${PREFIX}${INDEXS}
+	if ! [ -f $FILE ]; then
+		break;
+	fi
+
+	FILES="$FILES $FILE"
+
+	INDEX=$((INDEX+1))
+done
+
+echo "Unsplitting files $FILES" >&2
+
+exec cat $FILES
+
